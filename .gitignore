@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# Environment
+.env
+venv/
+env/
+
+# OS
+.DS_Store
+
+# Streamlit
+.streamlit/
+
+# Large model backups (keep main models only)
+*.h5
+
+# Logs
+*.log
