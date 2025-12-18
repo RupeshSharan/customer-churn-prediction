@@ -6,23 +6,6 @@
 
 ---
 
-## 🚀 Why This Project Stands Out
-
-Most churn projects stop at “model training”.
-This project goes **beyond notebooks** and delivers a **business-ready ML system**:
-
-✔ Dual-domain modeling (Telecom + Banking)
-✔ Deep learning with embeddings
-✔ Robust preprocessing with missing-feature handling
-✔ Explainable AI (SHAP Waterfall plots)
-✔ Single-customer + batch prediction
-✔ Executive-ready PDF business reports
-✔ Interactive Streamlit UI
-
-This mirrors **how ML is actually deployed in companies**.
-
----
-
 ## 🧠 Business Problem
 
 Customer churn directly impacts:
@@ -100,7 +83,6 @@ This project uses **SHAP (SHapley Additive Explanations)** to ensure transparenc
 * 📊 Feature importance visualization
 * 🧠 Business-friendly interpretation
 
-> This is critical for stakeholder trust and regulatory environments.
 
 ---
 
@@ -113,8 +95,6 @@ This project uses **SHAP (SHapley Additive Explanations)** to ensure transparenc
 * 🎯 Risk classification (Low / Medium / High)
 * 🔎 SHAP explanation on demand
 * 📄 One-click PDF business report export
-
-**This is not a demo — it’s deployable.**
 
 ---
 
@@ -167,21 +147,8 @@ Perfect for:
 
 ---
 
-## 📎 How to Run Locally
-
-```bash
-git clone https://github.com/RupeshSharan/customer-churn-prediction.git
-cd customer-churn-prediction
-pip install -r requirements.txt
-streamlit run streamlit_churn_app.py
-```
-
----
-
 ## 👨‍💻 Author
 
 **Rupesh Sharan**
 🎓 CSE (AI/ML) Student
 💡 Aspiring Data Scientist / ML Engineer
-
-Just tell me 👍
