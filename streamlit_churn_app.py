@@ -11,14 +11,18 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 from datetime import datetime
 
-# ---------------- CONFIG ---------------- #
+# ================= CONFIG ================= #
 
-st.set_page_config(page_title="Customer Churn Studio", layout="wide")
+st.set_page_config(
+    page_title="Customer Churn Studio",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 BASE_DIR = Path(r"C:\Users\rupes\Downloads\customer_churn")
 MODELS_DIR = BASE_DIR / "models"
 
-# ---------------- LOAD ASSETS ---------------- #
+# ================= LOAD ASSETS ================= #
 
 @st.cache_resource
 def load_assets():
@@ -34,7 +38,7 @@ def load_assets():
 
 assets = load_assets()
 
-# ---------------- BANK PREPROCESS ---------------- #
+# ================= BANK PREPROCESS ================= #
 
 def preprocess_bank(df):
     df = df.copy()
@@ -44,20 +48,17 @@ def preprocess_bank(df):
         "EstimatedSalary","Satisfaction Score","Point Earned"
     ]
 
-    # Ensure numeric columns exist
     for c in NUM_COLS:
         if c not in df:
             df[c] = 0
         df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0)
 
-    # Engineered features
     df["BalanceSalaryRatio"] = df["Balance"] / (df["EstimatedSalary"] + 1)
     df["LoyaltyScore"] = df["Tenure"] * df["NumOfProducts"]
 
-    BANK_NUM_COLS = NUM_COLS + ["BalanceSalaryRatio", "LoyaltyScore"]
+    BANK_NUM_COLS = NUM_COLS + ["BalanceSalaryRatio","LoyaltyScore"]
     X_num = assets["bank_scaler"].transform(df[BANK_NUM_COLS])
 
-    # Categorical embeddings
     X_cat = []
     for col, le in assets["bank_encoders"].items():
         if col not in df:
@@ -68,119 +69,146 @@ def preprocess_bank(df):
 
     return [X_num] + X_cat
 
-# ---------------- TELCO PREPROCESS ---------------- #
+# ================= TELCO PREPROCESS ================= #
 
 def preprocess_telco(df):
     df = df.copy()
 
-    # Ensure all features exist
     for col in assets["telco_features"]:
         if col not in df:
             df[col] = 0
 
-    # Numeric safety
-    for c in ["tenure", "MonthlyCharges", "TotalCharges"]:
+    for c in ["tenure","MonthlyCharges","TotalCharges"]:
         df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0)
 
-    # Engineered features
     df["avg_charges_per_month"] = df["TotalCharges"] / (df["tenure"] + 1)
     df["num_services"] = (
-        (df.get("PhoneService", "No") == "Yes").astype(int) +
-        (df.get("InternetService", "No") != "No").astype(int)
+        (df.get("PhoneService","No")=="Yes").astype(int) +
+        (df.get("InternetService","No")!="No").astype(int)
     )
-    df["is_new_customer"] = (df["tenure"] <= 6).astype(int)
+    df["is_new_customer"] = (df["tenure"]<=6).astype(int)
 
     df["tenure_bin"] = pd.cut(
         df["tenure"],
-        bins=[0, 12, 24, 48, 72, 1e9],
+        bins=[0,12,24,48,72,1e9],
         labels=[0,1,2,3,4]
     ).astype(int)
 
-    # Encode categoricals safely
     for col, le in assets["telco_encoders"].items():
-        mapping = {cls: i for i, cls in enumerate(le.classes_)}
-        df[col] = df[col].astype(str).map(lambda x: mapping.get(x, 0)).astype(int)
+        mapping = {cls:i for i,cls in enumerate(le.classes_)}
+        df[col] = df[col].astype(str).map(lambda x: mapping.get(x,0)).astype(int)
 
     X = df[assets["telco_features"]].astype(float)
     return assets["telco_scaler"].transform(X)
 
-# ---------------- PDF REPORT ---------------- #
+# ================= PDF ================= #
 
 def generate_pdf_report(df, dataset):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     y = 800
 
-    c.setFont("Helvetica-Bold", 18)
-    c.drawString(50, y, "Customer Churn Business Report")
+    c.setFont("Helvetica-Bold",18)
+    c.drawString(50,y,"Customer Churn Business Report")
     y -= 40
 
-    c.setFont("Helvetica", 12)
-    c.drawString(50, y, f"Dataset: {dataset}")
+    c.setFont("Helvetica",12)
+    c.drawString(50,y,f"Dataset: {dataset}")
     y -= 20
-    c.drawString(50, y, f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-
-    y -= 40
-    c.drawString(50, y, f"Average churn probability: {df['churn_probability'].mean():.2%}")
+    c.drawString(50,y,f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
 
     y -= 30
-    for k, v in df["risk"].value_counts().items():
-        c.drawString(70, y, f"{k}: {v}")
-        y -= 18
+    c.drawString(50,y,f"Average churn probability: {df['churn_probability'].mean():.2%}")
+
+    y -= 30
+    c.drawString(50,y,"Risk Distribution:")
+    y -= 20
+    for k,v in df["risk"].value_counts().items():
+        c.drawString(70,y,f"{k}: {v}")
+        y -= 16
 
     c.showPage()
     c.save()
     buffer.seek(0)
     return buffer
 
-# ---------------- UI ---------------- #
+# ================= UI ================= #
 
 st.title("📊 Customer Churn Studio")
 
-dataset = st.selectbox("Dataset", ["Telco", "Bank"])
-file = st.file_uploader("Upload CSV", type="csv")
-threshold = st.slider("Churn Threshold", 0.0, 1.0, 0.5)
+st.sidebar.header("Configuration")
+dataset = st.sidebar.selectbox("Dataset", ["Telco","Bank"])
+mode = st.sidebar.radio("Mode", ["Batch CSV","Single Customer (Telco)"])
+threshold = st.sidebar.slider("Churn Threshold",0.0,1.0,0.5)
 
-if file:
-    df = pd.read_csv(file)
-    st.dataframe(df.head())
+# ---------- SINGLE CUSTOMER (TELCO ONLY) ---------- #
 
-    if st.button("Run Prediction"):
-        try:
-            if dataset == "Bank":
-                inputs = preprocess_bank(df)
-                probs = assets["bank_model"].predict(inputs).ravel()
-            else:
-                Xs = preprocess_telco(df)
-                probs = assets["telco_model"].predict(Xs).ravel()
+if mode.startswith("Single"):
+    if dataset != "Telco":
+        st.warning("Single-customer mode is available only for Telco.")
+        st.stop()
 
-            df["churn_probability"] = probs
-            df["risk"] = pd.cut(probs, [0, .33, .66, 1], labels=["Low","Medium","High"])
+    st.subheader("🧍 Single Customer – Telco")
 
-            st.success("Prediction successful")
-            st.metric("Average churn", f"{probs.mean():.3f}")
-            st.dataframe(df.head(20))
+    user = {
+        "gender": st.selectbox("Gender",["Male","Female"]),
+        "SeniorCitizen": st.selectbox("Senior Citizen",[0,1]),
+        "Partner": st.selectbox("Partner",["Yes","No"]),
+        "Dependents": st.selectbox("Dependents",["Yes","No"]),
+        "tenure": st.number_input("Tenure",0,100,12),
+        "PhoneService": st.selectbox("Phone Service",["Yes","No"]),
+        "InternetService": st.selectbox("Internet Service",["DSL","Fiber optic","No"]),
+        "MonthlyCharges": st.number_input("Monthly Charges",0.0,200.0,70.0),
+        "TotalCharges": st.number_input("Total Charges",0.0,10000.0,2000.0),
+    }
 
-            # -------- SHAP (TELCO ONLY) -------- #
-            if st.checkbox("Show SHAP Explanation"):
-                if dataset == "Telco":
-                    explainer = shap.Explainer(assets["telco_model"], Xs)
-                    shap_values = explainer(Xs[:1])
-                    fig, ax = plt.subplots()
-                    shap.plots.bar(shap_values[0], show=False)
-                    st.pyplot(fig)
-                else:
-                    st.info("SHAP not supported for embedding-based bank model.")
+    df = pd.DataFrame([user])
+    Xs = preprocess_telco(df)
+    prob = assets["telco_model"].predict(Xs)[0][0]
 
-            # -------- PDF -------- #
-            if st.button("📄 Download Business PDF"):
-                pdf = generate_pdf_report(df, dataset)
-                st.download_button(
-                    "Download PDF",
-                    pdf,
-                    file_name="churn_report.pdf",
-                    mime="application/pdf"
-                )
+    risk = "Low" if prob<.33 else "Medium" if prob<.66 else "High"
 
-        except Exception as e:
-            st.error(f"Prediction failed: {e}")
+    st.metric("Churn Probability",f"{prob:.2%}")
+    st.markdown(f"**Risk Level:** `{risk}`")
+
+    if st.checkbox("Explain with SHAP"):
+        explainer = shap.KernelExplainer(assets["telco_model"].predict, Xs)
+        shap_values = explainer.shap_values(Xs[:1], nsamples=100)
+
+        fig,_ = plt.subplots(figsize=(8,4))
+        shap.plots.waterfall(
+            shap.Explanation(
+                values=shap_values[0][0],
+                base_values=explainer.expected_value,
+                data=Xs[0],
+                feature_names=assets["telco_features"]
+            ),
+            show=False
+        )
+        st.pyplot(fig)
+
+# ---------- BATCH CSV ---------- #
+
+else:
+    file = st.file_uploader("Upload CSV",type="csv")
+    if file:
+        df = pd.read_csv(file)
+        st.dataframe(df.head())
+
+        if dataset=="Telco":
+            X = preprocess_telco(df)
+            probs = assets["telco_model"].predict(X).ravel()
+        else:
+            inputs = preprocess_bank(df)
+            probs = assets["bank_model"].predict(inputs).ravel()
+
+        df["churn_probability"] = probs
+        df["risk"] = pd.cut(probs,[0,.33,.66,1],labels=["Low","Medium","High"])
+
+        st.success("Prediction completed")
+        st.metric("Average churn",f"{probs.mean():.3f}")
+        st.dataframe(df.head(20))
+
+        if st.button("📄 Download PDF Report"):
+            pdf = generate_pdf_report(df,dataset)
+            st.download_button("Download PDF",pdf,file_name="churn_report.pdf")
