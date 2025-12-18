@@ -82,22 +82,6 @@ I optimized the models for **Recall**, because in churn prediction, missing a ch
 
 ---
 
-## 📂 Project Structure
-
-```bash
-customer_churn/
-│
-├── models/                  # Saved Keras models & Scalers
-│   ├── bank_churn_model_emb.keras
-│   └── telco_churn_model.keras
-├── streamlit_churn_app.py   # The main dashboard application
-├── churn_pipeline.ipynb     # Training & experiments
-└── README.md
-
-```
-
----
-
 ## 🚀 Future Roadmap
 
 This project is fully functional, but I'm always looking to improve it. Next on my list:
