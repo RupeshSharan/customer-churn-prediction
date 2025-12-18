@@ -1,100 +1,187 @@
-# 📊 Customer Churn Studio
+# 📊 Customer Churn Prediction Studio
 
-### Turning Data into Retention Strategies
+**End-to-End Machine Learning Project | Business-Ready | Explainable AI**
 
-**Welcome to Customer Churn Studio!**
-
-In the world of subscription business, losing a customer (churn) is costly. I built this project to move beyond simple prediction and focus on **actionable insights**. It’s not enough to know *who* will leave; businesses need to know *why*.
-
-This is an end-to-end machine learning application that predicts churn risk for **Telecom** and **Banking** customers. It wraps complex Deep Learning models in a user-friendly Streamlit dashboard, complete with Explainable AI (SHAP) to help stakeholders trust the model's decisions.
+> A production-ready churn prediction system for **Telecom and Banking domains**, featuring advanced feature engineering, deep learning models, explainable AI (SHAP), and an interactive Streamlit dashboard for real-world decision support.
 
 ---
 
-## 💡 The "Why" Behind This Project
+## 🚀 Why This Project Stands Out
 
-I wanted to build a system that mimics a real-world production environment. A raw Jupyter Notebook is great for research, but it doesn't help a marketing manager.
+Most churn projects stop at “model training”.
+This project goes **beyond notebooks** and delivers a **business-ready ML system**:
 
-**My goals were to:**
+✔ Dual-domain modeling (Telecom + Banking)
+✔ Deep learning with embeddings
+✔ Robust preprocessing with missing-feature handling
+✔ Explainable AI (SHAP Waterfall plots)
+✔ Single-customer + batch prediction
+✔ Executive-ready PDF business reports
+✔ Interactive Streamlit UI
 
-1. **Solve a Real Problem:** Help businesses identify at-risk customers *before* they leave.
-2. **Prioritize Explainability:** Use SHAP to break open the "black box" of Deep Learning so non-technical users can understand the drivers (e.g., "This customer is leaving because their contract is Month-to-Month").
-3. **Go Full-Cycle:** From raw CSVs to a deployed app that generates PDF reports.
-
----
-
-## ⚙️ How It Works (The Solution)
-
-I designed the architecture to handle two distinct domains—**Banking and Telecom**—demonstrating that the pipeline is flexible and scalable.
-
-### 1. The Models 🧠
-
-I moved away from standard decision trees and implemented **Deep Learning** models using **TensorFlow/Keras**.
-
-* **Telecom Model:** Focuses on service usage patterns and contract details.
-* **Banking Model:** Utilizes **Entity Embeddings** for categorical features (like Geography and Card Type) to capture complex relationships better than standard One-Hot Encoding.
-
-### 2. The Dashboard (Streamlit) 🖥️
-
-The front end allows two modes of operation:
-
-* **Single Customer Check:** Input details for one customer to get an instant risk score and a "Why?" explanation.
-* **Batch Processing:** Upload a CSV of thousands of customers. The system processes them and generates a downloadable report with risk segments (High, Medium, Low).
-
-### 3. Explainable AI (XAI) 🔍
-
-Trust is key. I integrated **SHAP (SHapley Additive exPlanations)** to generate waterfall plots. This shows exactly which feature pushed the probability up or down for any specific customer.
+This mirrors **how ML is actually deployed in companies**.
 
 ---
 
-## 🛠️ Tech Stack & Tools
+## 🧠 Business Problem
 
-* **Core Logic:** Python 3.12, Pandas, NumPy
-* **Machine Learning:** TensorFlow, Keras, Scikit-learn
-* **Visualization:** Matplotlib, SHAP
-* **App Framework:** Streamlit
-* **Reporting:** ReportLab (for generating professional PDFs)
+Customer churn directly impacts:
 
----
+* Revenue
+* Customer lifetime value
+* Marketing costs
 
-## 📊 Key Features Engineered
-
-Feature engineering is where the magic happens. I didn't just dump the raw data into the model; I created meaningful signals:
-
-* **For Telecom:**
-* `avg_charges_per_month`: Normalizing charges to find price sensitivity.
-* `tenure_bin`: Grouping customers by loyalty stages (New vs. Long-term).
-
-
-* **For Banking:**
-* `BalanceSalaryRatio`: A derived metric to understand financial health relative to income.
-* `LoyaltyScore`: A composite metric based on tenure and activity.
-
-
+**Goal:**
+Predict **which customers are likely to churn**, explain *why*, and enable **early intervention strategies**.
 
 ---
 
-## 📈 Performance & Impact
+## 📊 Datasets Used
 
-I optimized the models for **Recall**, because in churn prediction, missing a churning customer (False Negative) is much worse than flagging a loyal one (False Positive).
+### 🔹 Telecom Churn Dataset
 
-* **Telecom Model:** ~84% ROC-AUC
-* **Banking Model:** >80% Accuracy
+* Customer demographics
+* Subscription details
+* Service usage
+* Billing & tenure
+
+### 🔹 Bank Customer Churn Dataset
+
+* Credit score
+* Balance & salary
+* Product usage
+* Complaints & satisfaction score
 
 ---
 
-## 🚀 Future Roadmap
+## ⚙️ Feature Engineering (Business-Driven)
 
-This project is fully functional, but I'm always looking to improve it. Next on my list:
+### Telecom
 
-* **Dockerization:** Containerizing the app for easier cloud deployment.
-* **API Endpoint:** Building a FastAPI backend to serve predictions to other systems.
-* **Live Monitoring:** Adding a drift detection module to see if data patterns change over time.
+* `avg_charges_per_month`
+* `num_services`
+* `is_new_customer`
+* `tenure_bin` (early churn detection)
+
+### Banking
+
+* `BalanceSalaryRatio`
+* `LoyaltyScore`
+* Age segmentation
+* Product interaction features
+
+Each feature was engineered to **reflect real business intuition**, not just improve accuracy.
 
 ---
 
-## 👨‍💻 About Me
+## 🤖 Models Used
+
+### 🏦 Banking Churn Model
+
+* Neural Network with **Embedding layers**
+* Handles high-cardinality categorical features
+* Optimized using EarlyStopping & ModelCheckpoint
+
+### 📡 Telecom Churn Model
+
+* Deep Neural Network
+* StandardScaler pipeline
+* Class imbalance handling
+
+📌 Both models are saved and reused in production.
+
+---
+
+## 📈 Model Explainability (SHAP)
+
+This project uses **SHAP (SHapley Additive Explanations)** to ensure transparency:
+
+* 🔍 Waterfall plots for **single customer explanations**
+* 📊 Feature importance visualization
+* 🧠 Business-friendly interpretation
+
+> This is critical for stakeholder trust and regulatory environments.
+
+---
+
+## 🖥️ Streamlit Application
+
+### Features:
+
+* 📁 Batch CSV predictions
+* 🧍 Single-customer churn prediction
+* 🎯 Risk classification (Low / Medium / High)
+* 🔎 SHAP explanation on demand
+* 📄 One-click PDF business report export
+
+**This is not a demo — it’s deployable.**
+
+---
+
+## 📄 Business PDF Report
+
+Automatically generated executive report including:
+
+* Average churn risk
+* Risk distribution
+* Top churn drivers (SHAP)
+* Customer volume summary
+
+Perfect for:
+
+* Management reviews
+* Strategy meetings
+* Client presentations
+
+---
+
+## 🧪 Tech Stack
+
+* **Python**
+* **Pandas, NumPy**
+* **Scikit-learn**
+* **TensorFlow / Keras**
+* **SHAP**
+* **Streamlit**
+* **ReportLab**
+* **Git & GitHub**
+
+---
+
+## 📌 Key ML Engineering Practices Demonstrated
+
+✔ Feature consistency between training & inference
+✔ Robust handling of missing / unseen categories
+✔ Scalable preprocessing pipelines
+✔ Model explainability
+✔ Production-oriented UI design
+
+---
+
+## 🎯 Results & Impact
+
+* Identifies high-risk customers **before churn**
+* Explains *why* customers churn
+* Enables targeted retention strategies
+* Reduces decision latency with automation
+
+---
+
+## 📎 How to Run Locally
+
+```bash
+git clone https://github.com/RupeshSharan/customer-churn-prediction.git
+cd customer-churn-prediction
+pip install -r requirements.txt
+streamlit run streamlit_churn_app.py
+```
+
+---
+
+## 👨‍💻 Author
 
 **Rupesh Sharan**
-*CSE (AI/ML) Student | Graduating 2027*
+🎓 CSE (AI/ML) Student
+💡 Aspiring Data Scientist / ML Engineer
 
-I am an aspiring Machine Learning Engineer passionate about building systems that bridge the gap between complex algorithms and business value.
+Just tell me 👍
