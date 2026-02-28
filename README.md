@@ -1,96 +1,207 @@
-# 📊 Customer Churn Prediction Studio
+# 📊 Customer Churn Studio
 
-### End-to-End Machine Learning for Banking & Telecom
+### Predict. Explain. Retain.
 
-> **A production-ready solution that doesn't just predict churn—it explains it.**
-> This project demonstrates a full-stack ML pipeline for the **Telecom and Banking domains**, featuring deep learning, automated PDF reporting, and Explainable AI (XAI) for business decision support.
+An end-to-end machine learning system that predicts customer churn for **Telecom** and **Banking** industries — and explains *why* each customer might leave, in plain English.
 
----
-
-## 🧠 The Business Problem
-
-Customer churn is a silent revenue killer. In subscription models, acquiring a new customer is **5-25x more expensive** than retaining an existing one.
-
-**The Goal:** Move beyond simple binary classification to provide:
-
-1. **Early Warning:** Identify high-risk customers before they leave.
-2. **Root Cause Analysis:** Use SHAP to explain *why* a specific customer is at risk (e.g., "Contract Type" vs. "Support Calls").
-3. **Actionable Intelligence:** Generate risk-stratified reports for marketing teams.
+> *"This customer is at high risk of leaving because of their Contract type, high Monthly Charges, and no Tech Support. The company should reach out immediately."*
 
 ---
 
-## 🚀 Key Features
+## 🎯 What Makes This Different
 
-### 1. Dual-Domain Support 🏦 📡
+Most churn prediction projects stop at **"who will leave."** This one answers **"why they will leave"** and **"what to do about it."**
 
-Unlike standard projects that focus on one dataset, this system handles two distinct business domains with separate preprocessing pipelines:
-
-* **Telecom:** Focuses on service usage, contract types, and payment methods.
-* **Banking:** Focuses on credit scores, account balances, and product engagement.
-
-### 2. Business-Driven Feature Engineering ⚙️
-
-Features were engineered to capture behavioral signals, not just raw data:
-
-* **`BalanceSalaryRatio`:** Estimates financial stability (Bank).
-* **`TenureStrategy`:** Segments customers into New, Established, and Loyal bins (Telco).
-* **`LoyaltyScore`:** A composite metric derived from activity and tenure.
-
-### 3. Explainable AI (XAI) 🔍
-
-Black-box models are hard to trust. I integrated **SHAP (SHapley Additive exPlanations)** to provide:
-
-* **Waterfall Plots:** Visualizing exactly which features pushed a customer's risk score up or down.
-* **Global Importance:** Identifying the top churn drivers across the entire customer base.
-
-### 4. Automated Reporting 📄
-
-The app generates a downloadable **Executive PDF Report** summarizing:
-
-* Total Churn Risk
-* Risk Segmentation (High/Medium/Low)
-* Top Drivers of Churn
-* *Built using ReportLab.*
+| Feature | Description |
+|---------|-------------|
+| 🧠 **Ensemble ML** | XGBoost + Random Forest (Optuna-tuned, 40 trials) |
+| ⚖️ **Class Balancing** | SMOTE oversampling + physically balanced dataset (Type 2) |
+| 💬 **Plain-English Explanations** | SHAP-powered, context-aware sentences anyone can read |
+| 📊 **Interactive Dashboard** | Streamlit app with single-customer & batch-CSV modes |
+| 📄 **PDF Reports** | Auto-generated business reports with risk distribution |
 
 ---
 
-## 🛠️ Tech Stack
+## 🖥️ Dashboard Preview
 
-| Component | Tools Used |
-| --- | --- |
-| **Core Logic** | Python 3.12, Pandas, NumPy |
-| **Machine Learning** | TensorFlow (Keras), Scikit-Learn |
-| **Model Architecture** | Neural Networks (Dense), Entity Embeddings (for Categorical Data) |
-| **Explainability** | SHAP (KernelExplainer) |
-| **Web App** | Streamlit |
-| **Reporting** | ReportLab |
+The Streamlit app adapts its messaging based on risk level:
 
----
+- **🟢 Low Risk** → *"✅ Why This Customer Is Likely to Stay"*
+- **🟡 Medium Risk** → *"⚠️ This Customer Needs Attention"*
+- **🔴 High Risk** → *"🚨 Why This Customer May Leave"*
 
-## 🤖 Model Performance
-
-*Optimization Focus: Recall (Minimizing False Negatives)*
-
-| Domain | Metric | Score |
-| --- | --- | --- |
-| **Telecom** | ROC-AUC | **~0.84** |
-| **Banking** | Accuracy | **~80%+** |
+Each prediction includes:
+- Churn probability percentage
+- Risk level badge
+- Natural-language explanation
+- Visual bar chart (Keeping ← → Leaving)
+- Actionable breakdown of each contributing factor
 
 ---
 
-## 📸 Application Screenshots
+## ⚙️ Tech Stack
 
-*(Add your screenshots here)*
+| Layer | Technology |
+|-------|-----------|
+| **Models** | XGBoost, Random Forest, Scikit-learn |
+| **Optimization** | Optuna (Bayesian hyperparameter tuning) |
+| **Explainability** | SHAP (TreeExplainer — fast & exact) |
+| **Balancing** | SMOTE (imbalanced-learn) + Undersampling |
+| **App** | Streamlit |
+| **Reports** | ReportLab (PDF generation) |
+| **Data** | Pandas, NumPy |
+| **Language** | Python 3.12 |
 
-* **Dashboard Home:** *[Image Placeholder]*
-* **SHAP Waterfall Plot:** *[Image Placeholder]*
-* **PDF Report Preview:** *[Image Placeholder]*
+---
+
+## 📁 Project Structure
+
+```
+customer_churn/
+├── streamlit_churn_app.py          # 🖥️  Streamlit dashboard
+├── churn_explainer.py              # 💬  SHAP explanation engine
+├── train_telco_optimized.py        # 🧠  Telco model training (SMOTE)
+├── train_telco_type2.py            # 🧠  Telco Type 2 training (undersampled)
+├── train_bank_optimized.py         # 🧠  Bank model training
+├── requirements.txt                # 📦  Dependencies
+├── data/
+│   ├── telco_churn_processed_for_modeling.csv
+│   └── Customer-Churn-Records-bank.csv
+├── models/
+│   ├── telco_ensemble_model.pkl    # Telco ensemble (XGB + RF)
+│   ├── telco_xgb_model.pkl         # Telco XGBoost (for SHAP)
+│   ├── telco2_ensemble_model.pkl   # Telco Type 2 ensemble
+│   ├── telco2_xgb_model.pkl        # Telco Type 2 XGB (for SHAP)
+│   ├── bank_ensemble_model.pkl     # Bank ensemble
+│   ├── bank_xgb_model.pkl          # Bank XGBoost (for SHAP)
+│   └── *_scaler.pkl, *_encoders.pkl, *_feature_order.pkl
+├── Book1.twb                       # 📊  Tableau workbook
+├── bank.twb                        # 📊  Tableau workbook
+└── telco_customer_churn_viz.twbx   # 📊  Tableau packaged workbook
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Train the Models (optional — pre-trained models are included)
+
+```bash
+# Telco (SMOTE-balanced, all 7043 rows)
+python train_telco_optimized.py
+
+# Telco Type 2 (undersampled to 3738 balanced rows)
+python train_telco_type2.py
+
+# Bank
+python train_bank_optimized.py
+```
+
+### 3. Launch the Dashboard
+
+```bash
+streamlit run streamlit_churn_app.py
+```
+
+---
+
+## 📊 Datasets
+
+### Telco Customer Churn
+- **Source:** [Kaggle — Telco Customer Churn](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
+- **Size:** 7,043 customers × 21 features
+- **Target:** `Churn` (Yes/No — 27% churn rate)
+- **Key Features:** Contract type, Monthly Charges, Internet Service, Tenure, Tech Support
+
+### Bank Customer Churn
+- **Source:** [Kaggle — Bank Customer Churn Records](https://www.kaggle.com/datasets/radheshyamkollipara/bank-customer-churn)
+- **Size:** 10,000 customers × 18 features
+- **Target:** `Exited` (0/1 — 20% churn rate)
+- **Key Features:** Age, Geography, Complaints, Balance, Active Membership
+
+---
+
+## 🧠 Model Architecture
+
+### Training Pipeline
+
+```
+Raw Data → Feature Engineering → Encoding → Scaling → Balancing → Optuna Tuning → Ensemble Training
+```
+
+### Feature Engineering
+
+**Telco:**
+- `avg_charges_per_month` — spending rate
+- `tenure_x_monthly` — loyalty × spending interaction
+- `charge_ratio` — proportion of monthly vs. total charges
+- `high_charge_short_tenure` — new customers paying a lot
+
+**Bank:**
+- `BalanceSalaryRatio` — financial health indicator
+- `LoyaltyScore` — tenure × products
+- `ProductsPerTenure` — product adoption rate
+- `BalanceEngagement` — has savings + actively uses account
+
+### Three Model Variants
+
+| Model | Dataset | Balancing | Training Size | Use Case |
+|-------|---------|-----------|---------------|----------|
+| **Telco** | Full (7,043) | SMOTE | 8,278 (synthetic) | General prediction |
+| **Telco Type 2** | Balanced (3,738) | Undersampled | 2,990 | Equal class representation |
+| **Bank** | Full (10,000) | SMOTE | ~16,000 (synthetic) | Banking churn |
+
+---
+
+## 💬 How Explanations Work
+
+The system uses **SHAP (SHapley Additive exPlanations)** with `TreeExplainer` on the standalone XGBoost model to decompose each prediction into per-feature contributions.
+
+The raw SHAP values are translated into **context-aware plain English**:
+
+### Low Risk (< 33%)
+> *"This customer is likely to stay because of their average monthly spending, Online Security service, and Tech Support access. However, keep an eye on their Contract type — if these are not managed well, the customer could become unhappy over time."*
+
+### High Risk (> 66%)
+> *"This customer is at high risk of leaving because of their Contract type, high Monthly Charges, and no Tech Support. The company should reach out to this customer immediately and address these concerns to prevent them from leaving."*
+
+---
+
+## 📈 Results
+
+All models are optimized with **Optuna** (40 trials, 5-fold stratified CV):
+
+| Metric | Telco | Telco Type 2 | Bank |
+|--------|-------|-------------|------|
+| ROC-AUC | ~0.85+ | ~0.86 | ~0.87+ |
+| Optimized for | Recall | Balance | Recall |
+
+---
+
+## 🗺️ Future Roadmap
+
+- [ ] **Dockerization** — containerize for cloud deployment
+- [ ] **FastAPI backend** — serve predictions via REST API
+- [ ] **Drift detection** — monitor data pattern changes over time
+- [ ] **A/B experiment tracking** — measure retention campaign effectiveness
 
 ---
 
 ## 👨‍💻 Author
 
 **Rupesh Sharan**
-*CSE (AI/ML) Undergraduate | Aspiring Machine Learning Engineer*
+*CSE (AI/ML) Student | Graduating 2027*
 
-[LinkedIn](https://www.google.com/search?q=https://linkedin.com/in/rupesh-sharan-chavan-452a98289) | [GitHub](https://www.google.com/search?q=https://github.com/RupeshSharan)
+Building systems that bridge the gap between complex algorithms and business value.
+
+---
+
+## 📜 License
+
+This project is open source and available under the [MIT License](LICENSE).
