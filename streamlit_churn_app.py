@@ -56,7 +56,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-BASE_DIR = Path(r"C:\Users\rupes\Downloads\customer_churn")
+BASE_DIR = Path(__file__).resolve().parent
 MODELS_DIR = BASE_DIR / "models"
 
 # ================= LOAD ASSETS ================= #

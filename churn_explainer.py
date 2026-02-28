@@ -11,7 +11,7 @@ import pandas as pd
 import shap
 from pathlib import Path
 
-BASE_DIR = Path(r"C:\Users\rupes\Downloads\customer_churn")
+BASE_DIR = Path(__file__).resolve().parent
 MODELS_DIR = BASE_DIR / "models"
 
 # ============================================================

@@ -33,7 +33,7 @@ optuna.logging.set_verbosity(optuna.logging.WARNING)
 # CONFIG
 # ============================================================
 
-BASE_DIR = Path(r"C:\Users\rupes\Downloads\customer_churn")
+BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 MODELS_DIR = BASE_DIR / "models"
 MODELS_DIR.mkdir(exist_ok=True)
