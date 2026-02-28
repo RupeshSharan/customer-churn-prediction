@@ -6,3 +6,7 @@ tensorflow
 shap
 matplotlib
 joblib
+xgboost
+optuna
+imbalanced-learn
+reportlab

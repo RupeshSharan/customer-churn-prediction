@@ -13,6 +13,9 @@ env/
 # OS
 .DS_Store
 
+# Tableau temp/recovery files
+~*.twbr
+
 # Streamlit
 .streamlit/
 
