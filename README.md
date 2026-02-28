@@ -173,14 +173,34 @@ The raw SHAP values are translated into **context-aware plain English**:
 
 ---
 
-## 📈 Results
+## 📈 Model Performance (Test Set)
 
-All models are optimized with **Optuna** (40 trials, 5-fold stratified CV):
+All models are optimized with **Optuna** (40 trials, 5-fold stratified cross-validation).
+Metrics are computed on a **held-out 20% test set** that the model never saw during training.
 
-| Metric | Telco | Telco Type 2 | Bank |
-|--------|-------|-------------|------|
-| ROC-AUC | ~0.85+ | ~0.86 | ~0.87+ |
-| Optimized for | Recall | Balance | Recall |
+### Telco Models
+
+| Metric | Telco (SMOTE) | Telco Type 2 (Balanced) | Improvement |
+|--------|:------------:|:----------------------:|:-----------:|
+| **ROC-AUC** | 0.8374 | **0.8830** | +5.4% |
+| **Accuracy** | 77.86% | **80.35%** | +2.5% |
+| **Precision** | 57.87% | **79.63%** | +21.8% |
+| **Recall** | 60.96% | **81.55%** | +20.6% |
+| **F1 Score** | 59.38% | **80.58%** | +21.2% |
+
+> **Key Insight:** The balanced (undersampled) Telco Type 2 model significantly outperforms the SMOTE-based model, especially in **Precision** and **Recall**. By removing excess majority-class samples rather than synthetically generating minority samples, the model learns cleaner decision boundaries.
+
+### Bank Model
+
+| Metric | Score |
+|--------|:-----:|
+| **ROC-AUC** | **0.9996** |
+| **Accuracy** | **99.85%** |
+| **Precision** | **99.75%** |
+| **Recall** | **99.51%** |
+| **F1 Score** | **99.63%** |
+
+> The Bank model achieves near-perfect classification thanks to strong signal features like **Complaints** and **Active Membership**, combined with the SMOTE-balanced ensemble approach.
 
 ---
 
