@@ -1,100 +1,96 @@
-# 📊 Customer Churn Studio
+# 📊 Customer Churn Prediction Studio
 
-### Turning Data into Retention Strategies
+### End-to-End Machine Learning for Banking & Telecom
 
-**Welcome to Customer Churn Studio!**
-
-In the world of subscription business, losing a customer (churn) is costly. I built this project to move beyond simple prediction and focus on **actionable insights**. It’s not enough to know *who* will leave; businesses need to know *why*.
-
-This is an end-to-end machine learning application that predicts churn risk for **Telecom** and **Banking** customers. It wraps complex Deep Learning models in a user-friendly Streamlit dashboard, complete with Explainable AI (SHAP) to help stakeholders trust the model's decisions.
+> **A production-ready solution that doesn't just predict churn—it explains it.**
+> This project demonstrates a full-stack ML pipeline for the **Telecom and Banking domains**, featuring deep learning, automated PDF reporting, and Explainable AI (XAI) for business decision support.
 
 ---
 
-## 💡 The "Why" Behind This Project
+## 🧠 The Business Problem
 
-I wanted to build a system that mimics a real-world production environment. A raw Jupyter Notebook is great for research, but it doesn't help a marketing manager.
+Customer churn is a silent revenue killer. In subscription models, acquiring a new customer is **5-25x more expensive** than retaining an existing one.
 
-**My goals were to:**
+**The Goal:** Move beyond simple binary classification to provide:
 
-1. **Solve a Real Problem:** Help businesses identify at-risk customers *before* they leave.
-2. **Prioritize Explainability:** Use SHAP to break open the "black box" of Deep Learning so non-technical users can understand the drivers (e.g., "This customer is leaving because their contract is Month-to-Month").
-3. **Go Full-Cycle:** From raw CSVs to a deployed app that generates PDF reports.
+1. **Early Warning:** Identify high-risk customers before they leave.
+2. **Root Cause Analysis:** Use SHAP to explain *why* a specific customer is at risk (e.g., "Contract Type" vs. "Support Calls").
+3. **Actionable Intelligence:** Generate risk-stratified reports for marketing teams.
 
 ---
 
-## ⚙️ How It Works (The Solution)
+## 🚀 Key Features
 
-I designed the architecture to handle two distinct domains—**Banking and Telecom**—demonstrating that the pipeline is flexible and scalable.
+### 1. Dual-Domain Support 🏦 📡
 
-### 1. The Models 🧠
+Unlike standard projects that focus on one dataset, this system handles two distinct business domains with separate preprocessing pipelines:
 
-I moved away from standard decision trees and implemented **Deep Learning** models using **TensorFlow/Keras**.
+* **Telecom:** Focuses on service usage, contract types, and payment methods.
+* **Banking:** Focuses on credit scores, account balances, and product engagement.
 
-* **Telecom Model:** Focuses on service usage patterns and contract details.
-* **Banking Model:** Utilizes **Entity Embeddings** for categorical features (like Geography and Card Type) to capture complex relationships better than standard One-Hot Encoding.
+### 2. Business-Driven Feature Engineering ⚙️
 
-### 2. The Dashboard (Streamlit) 🖥️
+Features were engineered to capture behavioral signals, not just raw data:
 
-The front end allows two modes of operation:
-
-* **Single Customer Check:** Input details for one customer to get an instant risk score and a "Why?" explanation.
-* **Batch Processing:** Upload a CSV of thousands of customers. The system processes them and generates a downloadable report with risk segments (High, Medium, Low).
+* **`BalanceSalaryRatio`:** Estimates financial stability (Bank).
+* **`TenureStrategy`:** Segments customers into New, Established, and Loyal bins (Telco).
+* **`LoyaltyScore`:** A composite metric derived from activity and tenure.
 
 ### 3. Explainable AI (XAI) 🔍
 
-Trust is key. I integrated **SHAP (SHapley Additive exPlanations)** to generate waterfall plots. This shows exactly which feature pushed the probability up or down for any specific customer.
+Black-box models are hard to trust. I integrated **SHAP (SHapley Additive exPlanations)** to provide:
+
+* **Waterfall Plots:** Visualizing exactly which features pushed a customer's risk score up or down.
+* **Global Importance:** Identifying the top churn drivers across the entire customer base.
+
+### 4. Automated Reporting 📄
+
+The app generates a downloadable **Executive PDF Report** summarizing:
+
+* Total Churn Risk
+* Risk Segmentation (High/Medium/Low)
+* Top Drivers of Churn
+* *Built using ReportLab.*
 
 ---
 
-## 🛠️ Tech Stack & Tools
+## 🛠️ Tech Stack
 
-* **Core Logic:** Python 3.12, Pandas, NumPy
-* **Machine Learning:** TensorFlow, Keras, Scikit-learn
-* **Visualization:** Matplotlib, SHAP
-* **App Framework:** Streamlit
-* **Reporting:** ReportLab (for generating professional PDFs)
-
----
-
-## 📊 Key Features Engineered
-
-Feature engineering is where the magic happens. I didn't just dump the raw data into the model; I created meaningful signals:
-
-* **For Telecom:**
-* `avg_charges_per_month`: Normalizing charges to find price sensitivity.
-* `tenure_bin`: Grouping customers by loyalty stages (New vs. Long-term).
-
-
-* **For Banking:**
-* `BalanceSalaryRatio`: A derived metric to understand financial health relative to income.
-* `LoyaltyScore`: A composite metric based on tenure and activity.
-
-
+| Component | Tools Used |
+| --- | --- |
+| **Core Logic** | Python 3.12, Pandas, NumPy |
+| **Machine Learning** | TensorFlow (Keras), Scikit-Learn |
+| **Model Architecture** | Neural Networks (Dense), Entity Embeddings (for Categorical Data) |
+| **Explainability** | SHAP (KernelExplainer) |
+| **Web App** | Streamlit |
+| **Reporting** | ReportLab |
 
 ---
 
-## 📈 Performance & Impact
+## 🤖 Model Performance
 
-I optimized the models for **Recall**, because in churn prediction, missing a churning customer (False Negative) is much worse than flagging a loyal one (False Positive).
+*Optimization Focus: Recall (Minimizing False Negatives)*
 
-* **Telecom Model:** ~84% ROC-AUC
-* **Banking Model:** >80% Accuracy
-
----
-
-## 🚀 Future Roadmap
-
-This project is fully functional, but I'm always looking to improve it. Next on my list:
-
-* **Dockerization:** Containerizing the app for easier cloud deployment.
-* **API Endpoint:** Building a FastAPI backend to serve predictions to other systems.
-* **Live Monitoring:** Adding a drift detection module to see if data patterns change over time.
+| Domain | Metric | Score |
+| --- | --- | --- |
+| **Telecom** | ROC-AUC | **~0.84** |
+| **Banking** | Accuracy | **~80%+** |
 
 ---
 
-## 👨‍💻 About Me
+## 📸 Application Screenshots
+
+*(Add your screenshots here)*
+
+* **Dashboard Home:** *[Image Placeholder]*
+* **SHAP Waterfall Plot:** *[Image Placeholder]*
+* **PDF Report Preview:** *[Image Placeholder]*
+
+---
+
+## 👨‍💻 Author
 
 **Rupesh Sharan**
-*CSE (AI/ML) Student | Graduating 2027*
+*CSE (AI/ML) Undergraduate | Aspiring Machine Learning Engineer*
 
-I am an aspiring Machine Learning Engineer passionate about building systems that bridge the gap between complex algorithms and business value.
+[LinkedIn](https://www.google.com/search?q=https://linkedin.com/in/rupesh-sharan-chavan-452a98289) | [GitHub](https://www.google.com/search?q=https://github.com/RupeshSharan)
